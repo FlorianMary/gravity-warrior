@@ -448,6 +448,7 @@ let activeScreen = 'home';
 
 function navTo(name) {
   if (activeSession && name !== 'home') return; // lock nav during session
+  if (name === 'home') activeSession = null;
   switchScreen(name);
 }
 
@@ -736,15 +737,16 @@ function renderHistory() {
 
   lst.innerHTML = sessions.map((s, idx) => {
     const p = PROG[s.type];
+    if (!p) return '';
     const total = s.exercises.reduce((sum, ex) =>
       sum + ex.sets.reduce((ss, set) => ss + (set ? set.reps : 0), 0), 0);
     const detail = s.exercises.map(ex => {
       const setsStr = ex.sets.filter(Boolean)
         .map((set, i) => {
-          let s = `S${i+1}: ${set.reps} reps`;
-          if (set.weight != null) s += ` · ${set.weight}kg`;
-          if (set.variant) s += ` (${set.variant})`;
-          return s;
+          let str = `S${i+1}: ${set.reps} reps`;
+          if (set.weight != null) str += ` · ${set.weight}kg`;
+          if (set.variant) str += ` (${set.variant})`;
+          return str;
         })
         .join('  ·  ');
       return `<div class="hist-ex">
@@ -893,7 +895,10 @@ function drawLine(id, labels, values) {
 // ═══════════════════════════════════════════
 // UTILS
 // ═══════════════════════════════════════════
-function today() { return new Date().toISOString().split('T')[0]; }
+function today() {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
 function fullDate(d) {
   return new Date(d).toLocaleDateString('fr-FR', { weekday:'short', day:'numeric', month:'long' });
 }
