@@ -291,7 +291,15 @@
     #completion-overlay.active { display: flex; }
     #completion-overlay .big { font-size: 64px; }
     #completion-overlay h2 { font-size: 28px; font-weight: 900; }
-    #completion-overlay p { color: var(--text2); font-size: 15px; margin-bottom: 20px; }
+    #completion-overlay p { color: var(--text2); font-size: 15px; }
+    #session-note {
+      width: 100%; background: #1a1a1a; border: 1.5px solid #2a2a2a;
+      border-radius: 12px; color: var(--text); font-size: 15px;
+      padding: 12px 14px; resize: none; font-family: inherit;
+      margin-bottom: 4px;
+    }
+    #session-note:focus { outline: none; border-color: var(--accent); }
+    #session-note::placeholder { color: var(--text3); }
 
     /* ═══════════════════════════════════════
        HISTORY
@@ -414,7 +422,14 @@
 
 <!-- ═══ HISTORY ═══ -->
 <div id="screen-history" class="screen">
-  <h2>Historique</h2>
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
+    <h2>Historique</h2>
+    <button class="icon-btn" onclick="exportCSV()" title="Exporter CSV" style="flex-shrink:0">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+      </svg>
+    </button>
+  </div>
   <p id="hist-count"></p>
   <div id="hist-list"></div>
 </div>
@@ -464,7 +479,8 @@
   <div class="big">🔥</div>
   <h2>Séance terminée !</h2>
   <p id="completion-msg"></p>
-  <button class="btn btn-primary" style="width:100%" onclick="finishSession()">Retour à l'accueil</button>
+  <textarea id="session-note" rows="3" placeholder="Ajouter une note (ressenti, douleurs, observations…)"></textarea>
+  <button class="btn btn-primary" style="width:100%" onclick="finishSession()">Enregistrer et quitter</button>
 </div>
 
 <!-- ═══ BOTTOM NAV ═══ -->
@@ -931,15 +947,18 @@ function completeSession() {
   clearInterval(sessionTimerTick);
   const durationMs = sessionStartTime ? Date.now() - sessionStartTime : 0;
   activeSession.duration = Math.round(durationMs / 1000);
-  db.save(activeSession);
   const total = activeSession.exercises.reduce((s, ex) =>
     s + ex.sets.reduce((ss, set) => ss + (set ? set.reps : 0), 0), 0);
   const durStr = formatDuration(durationMs);
   document.getElementById('completion-msg').textContent = `${total} répétitions · ${durStr}`;
+  document.getElementById('session-note').value = '';
   document.getElementById('completion-overlay').classList.add('active');
 }
 
 function finishSession() {
+  const note = document.getElementById('session-note').value.trim();
+  if (note) activeSession.note = note;
+  db.save(activeSession);
   activeSession = null;
   document.getElementById('completion-overlay').classList.remove('active');
   switchScreen('home');
@@ -1045,7 +1064,10 @@ function renderHistory() {
         </div>
         <span class="hist-chevron" id="hc-${idx}">›</span>
       </div>
-      <div class="hist-body" id="hb-${idx}">${detail}</div>
+      <div class="hist-body" id="hb-${idx}">
+        ${s.note ? `<div style="background:#1a1a1a;border-radius:10px;padding:10px 13px;font-size:13px;color:var(--text2);margin-bottom:8px;border-left:3px solid var(--accent)">📝 ${s.note}</div>` : ''}
+        ${detail}
+      </div>
     </div>`;
   }).join('');
 }
@@ -1429,6 +1451,38 @@ function resetToDefaults() {
 // ═══════════════════════════════════════════
 // UTILS
 // ═══════════════════════════════════════════
+function exportCSV() {
+  const sessions = db.all();
+  if (!sessions.length) { alert('Aucune séance à exporter.'); return; }
+
+  const esc = v => `"${String(v ?? '').replace(/"/g, '""')}"`;
+  const SEP = ';';
+  const header = ['Date','Séance','Exercice','Série','Répétitions','Variante','Charge (kg)','Durée (min)','Note'];
+  const rows = [header.map(esc).join(SEP)];
+
+  sessions.forEach(s => {
+    const sName = PROG[s.type]?.name || s.type;
+    const dur   = s.duration ? Math.round(s.duration / 60) : '';
+    const note  = s.note || '';
+    s.exercises.forEach(ex => {
+      ex.sets.forEach((set, i) => {
+        if (!set) return;
+        rows.push([
+          s.date, sName, ex.name, i + 1,
+          set.reps, set.variant || '', set.weight ?? '', dur, note
+        ].map(esc).join(SEP));
+      });
+    });
+  });
+
+  const blob = new Blob(['﻿' + rows.join('\r\n')], { type: 'text/csv;charset=utf-8;' });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href = url; a.download = `gravity-warrior-${today()}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
 function formatDuration(ms) {
   const s = Math.floor(ms / 1000);
   const m = Math.floor(s / 60);
