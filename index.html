@@ -5,6 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="GW">
+  <meta name="theme-color" content="#f5c518">
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="icon.svg">
   <title>Gravity Warrior</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
@@ -1099,9 +1103,10 @@ function renderProgress() {
     .map(s => {
       const ex = s.exercises.find(e => e.name === selEx);
       const sets = ex.sets.filter(Boolean);
-      const total = sets.reduce((sum, set) => sum + set.reps, 0);
-      const best  = sets.length ? Math.max(...sets.map(set => set.reps)) : 0;
-      return { date: s.date, total, best };
+      const total  = sets.reduce((sum, set) => sum + set.reps, 0);
+      const best   = sets.length ? Math.max(...sets.map(set => set.reps)) : 0;
+      const volume = sets.reduce((sum, set) => sum + set.reps * (set.weight || 0), 0);
+      return { date: s.date, total, best, volume };
     });
 
   const ctn = document.getElementById('charts');
@@ -1109,6 +1114,8 @@ function renderProgress() {
     ctn.innerHTML = `<div class="empty-state"><div class="emoji">📈</div><p>Pas encore de données pour<br><strong style="color:var(--text)">${selEx}</strong></p></div>`;
     return;
   }
+
+  const hasVolume = data.some(d => d.volume > 0);
 
   ctn.innerHTML = `
     <div class="chart-card">
@@ -1118,17 +1125,22 @@ function renderProgress() {
     <div class="chart-card">
       <div class="chart-card-title">Meilleure série par séance</div>
       <canvas id="c-best" height="160"></canvas>
-    </div>`;
+    </div>
+    ${hasVolume ? `<div class="chart-card">
+      <div class="chart-card-title">Volume par séance (reps × kg)</div>
+      <canvas id="c-volume" height="160"></canvas>
+    </div>` : ''}`;
 
   requestAnimationFrame(() => {
-    drawLine('c-total', data.map(d=>d.date), data.map(d=>d.total));
-    drawLine('c-best',  data.map(d=>d.date), data.map(d=>d.best));
+    drawLine('c-total',  data.map(d=>d.date), data.map(d=>d.total),  '#f5c518');
+    drawLine('c-best',   data.map(d=>d.date), data.map(d=>d.best),   '#f5c518');
+    if (hasVolume) drawLine('c-volume', data.map(d=>d.date), data.map(d=>d.volume), '#4fc3f7');
   });
 }
 
 function pickEx(name) { selEx = name; renderProgress(); }
 
-function drawLine(id, labels, values) {
+function drawLine(id, labels, values, color = '#f5c518') {
   const canvas = document.getElementById(id);
   if (!canvas) return;
   const dpr = window.devicePixelRatio || 1;
@@ -1165,9 +1177,14 @@ function drawLine(id, labels, values) {
   pts.forEach(p => ctx.lineTo(p.x, p.y));
   ctx.lineTo(pts[pts.length-1].x, pad.t+ch);
   ctx.closePath();
+  // Convertir la couleur hex en rgba pour le gradient
+  const hex2rgba = (hex, a) => {
+    const r = parseInt(hex.slice(1,3),16), g = parseInt(hex.slice(3,5),16), b = parseInt(hex.slice(5,7),16);
+    return `rgba(${r},${g},${b},${a})`;
+  };
   const gr = ctx.createLinearGradient(0, pad.t, 0, pad.t+ch);
-  gr.addColorStop(0, 'rgba(245,197,24,.25)');
-  gr.addColorStop(1, 'rgba(245,197,24,0)');
+  gr.addColorStop(0, hex2rgba(color, .25));
+  gr.addColorStop(1, hex2rgba(color, 0));
   ctx.fillStyle = gr; ctx.fill();
 
   // Line
@@ -1177,13 +1194,13 @@ function drawLine(id, labels, values) {
       const mx = (pts[i-1].x + pts[i].x) / 2;
       ctx.bezierCurveTo(mx, pts[i-1].y, mx, pts[i].y, pts[i].x, pts[i].y);
     }
-    ctx.strokeStyle = '#f5c518'; ctx.lineWidth = 2.5; ctx.stroke();
+    ctx.strokeStyle = color; ctx.lineWidth = 2.5; ctx.stroke();
   }
 
   // Dots
   pts.forEach(p => {
     ctx.beginPath(); ctx.arc(p.x, p.y, 4, 0, Math.PI*2);
-    ctx.fillStyle = '#f5c518'; ctx.fill();
+    ctx.fillStyle = color; ctx.fill();
     ctx.strokeStyle = '#0f0f0f'; ctx.lineWidth = 1.5; ctx.stroke();
   });
 
@@ -1503,6 +1520,11 @@ function fullDate(d) {
 // INIT
 // ═══════════════════════════════════════════
 renderHome();
+
+// ── PWA Service Worker ──
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('sw.js').catch(() => {});
+}
 </script>
 </body>
 </html>
