@@ -194,9 +194,10 @@
     }
     .reps-btn:active { opacity: .7; }
     #input-reps {
-      flex: 1; background: #111; border: 1.5px solid #2a2a2a;
+      flex: 1; min-width: 0; width: 0;
+      background: #111; border: 1.5px solid #2a2a2a;
       border-radius: 12px; color: var(--text); font-size: 30px; font-weight: 700;
-      padding: 10px; text-align: center; -webkit-appearance: none;
+      padding: 10px; text-align: center; -webkit-appearance: none; appearance: none;
     }
     #input-reps:focus { outline: none; border-color: var(--accent); }
 
@@ -215,11 +216,13 @@
 
     .weight-row {
       display: flex; align-items: center; gap: 10px; margin-bottom: 14px;
+      min-width: 0;
     }
     #input-weight {
-      flex: 1; background: #111; border: 1.5px solid #2a2a2a;
+      flex: 1; min-width: 0; width: 0;
+      background: #111; border: 1.5px solid #2a2a2a;
       border-radius: 12px; color: var(--text); font-size: 24px; font-weight: 700;
-      padding: 10px; text-align: center; -webkit-appearance: none;
+      padding: 10px; text-align: center; -webkit-appearance: none; appearance: none;
     }
     #input-weight:focus { outline: none; border-color: var(--accent); }
     .weight-unit {
