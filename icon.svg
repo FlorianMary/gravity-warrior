@@ -1,8 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-  <rect width="512" height="512" rx="96" fill="#0f0f0f"/>
-  <text x="256" y="200" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
-    font-size="140" font-weight="900" fill="#f5c518">GW</text>
-  <text x="256" y="340" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
-    font-size="64" font-weight="700" fill="#ffffff">WARRIOR</text>
-  <rect x="96" y="370" width="320" height="4" rx="2" fill="#f5c518"/>
+  <rect width="512" height="512" rx="112" fill="#0f0f0f"/>
+  <text x="256" y="310" text-anchor="middle"
+    font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+    font-size="216" font-weight="900" fill="#f5c518">GW</text>
+  <rect x="92" y="336" width="328" height="14" rx="7" fill="#f5c518"/>
 </svg>
