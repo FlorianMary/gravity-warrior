@@ -1,0 +1,19 @@
+{
+  "name": "Gravity Warrior",
+  "short_name": "GW",
+  "description": "Suivi d'entraînement calisthenics",
+  "start_url": "/gravity-warrior/",
+  "scope": "/gravity-warrior/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0f0f0f",
+  "theme_color": "#f5c518",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
