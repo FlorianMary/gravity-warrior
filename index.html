@@ -81,6 +81,33 @@
     #screen-home .logo h1 span { color: var(--accent); }
     #screen-home .logo p { color: var(--text2); font-size: 13px; margin-top: 5px; }
 
+    /* Calendrier accueil */
+    .cal-card {
+      background: var(--card); border-radius: 20px; padding: 16px 14px;
+      margin-bottom: 16px;
+    }
+    .cal-header {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 12px;
+    }
+    .cal-title  { font-size: 14px; font-weight: 700; color: var(--text2); }
+    .cal-streak { font-size: 13px; font-weight: 700; color: var(--accent); }
+    .cal-grid {
+      display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px;
+    }
+    .cal-lbl {
+      text-align: center; font-size: 10px; color: var(--text3);
+      font-weight: 600; padding-bottom: 4px;
+    }
+    .cal-day {
+      aspect-ratio: 1; border-radius: 7px; display: flex;
+      align-items: center; justify-content: center;
+      font-size: 11px; font-weight: 500; color: var(--text3);
+      background: #1a1a1a;
+    }
+    .cal-day.today { border: 1.5px solid var(--accent); color: var(--accent); font-weight: 800; }
+    .cal-day.done  { font-weight: 700; }
+
     .seance-card {
       background: var(--card); border-radius: 20px; padding: 20px;
       margin-bottom: 12px; cursor: pointer; display: flex;
@@ -146,6 +173,11 @@
     }
     .prev-ref strong { color: var(--text); }
 
+    .progress-tip {
+      background: rgba(76,175,80,.12); border: 1px solid rgba(76,175,80,.25);
+      border-radius: 10px; padding: 9px 13px; font-size: 13px;
+      color: #81c784; margin-bottom: 14px;
+    }
     .input-lbl { font-size: 13px; color: var(--text2); margin-bottom: 7px; }
     .reps-row {
       display: flex; align-items: center; gap: 10px; margin-bottom: 14px;
@@ -221,6 +253,35 @@
     /* ═══════════════════════════════════════
        COMPLETION overlay
     ═══════════════════════════════════════ */
+    /* PR toast */
+    #pr-toast {
+      display: none; position: fixed; top: 24px; left: 50%;
+      transform: translateX(-50%) translateY(-8px);
+      background: linear-gradient(135deg, #f5c518, #ff8a00);
+      color: #000; border-radius: 14px; padding: 12px 22px;
+      font-size: 15px; font-weight: 800; z-index: 500;
+      white-space: nowrap; box-shadow: 0 6px 24px rgba(245,197,24,.45);
+      transition: opacity .3s, transform .3s;
+      opacity: 0;
+    }
+    #pr-toast.active {
+      display: block; opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    #quit-overlay {
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,.85); z-index: 350;
+      align-items: flex-end; justify-content: center; padding: 24px;
+    }
+    #quit-overlay.active { display: flex; }
+    .quit-sheet {
+      background: var(--card); border-radius: 22px; padding: 24px;
+      width: 100%; max-width: 420px; display: flex; flex-direction: column; gap: 10px;
+    }
+    .quit-sheet h3 { font-size: 18px; font-weight: 800; margin-bottom: 4px; }
+    .quit-sheet p  { font-size: 14px; color: var(--text2); margin-bottom: 6px; }
+
     #completion-overlay {
       display: none; position: fixed; inset: 0;
       background: rgba(0,0,0,.92); z-index: 300;
@@ -275,6 +336,55 @@
     .empty-state { text-align: center; padding: 50px 20px; color: var(--text2); }
     .empty-state .emoji { font-size: 48px; margin-bottom: 14px; }
     .empty-state p { font-size: 15px; line-height: 1.6; }
+
+    /* ═══════════════════════════════════════
+       SETTINGS
+    ═══════════════════════════════════════ */
+    .settings-section-title {
+      font-size: 11px; font-weight: 700; color: var(--text3);
+      text-transform: uppercase; letter-spacing: 1px; margin: 22px 0 10px;
+    }
+    .settings-row {
+      background: var(--card); border-radius: 14px; margin-bottom: 8px;
+      display: flex; align-items: center; padding: 13px 14px; gap: 12px;
+    }
+    .settings-row-info { flex: 1; min-width: 0; }
+    .settings-row-name { font-size: 15px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .settings-row-sub  { font-size: 12px; color: var(--text2); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .settings-row-actions { display: flex; gap: 8px; flex-shrink: 0; }
+    .icon-btn {
+      width: 36px; height: 36px; border-radius: 10px; border: none;
+      background: var(--card2); color: var(--text); font-size: 15px;
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+    }
+    .icon-btn.danger { background: rgba(239,83,80,.15); color: var(--danger); }
+    .icon-btn:active { opacity: .7; }
+    .form-field { margin-bottom: 16px; }
+    .form-field label { display: block; font-size: 13px; color: var(--text2); margin-bottom: 7px; }
+    .form-input {
+      width: 100%; background: #111; border: 1.5px solid #2a2a2a;
+      border-radius: 12px; color: var(--text); font-size: 15px;
+      padding: 12px 14px; -webkit-appearance: none; appearance: none;
+    }
+    .form-input:focus { outline: none; border-color: var(--accent); }
+    .targets-row { display: flex; gap: 8px; }
+    .targets-row .form-input { text-align: center; }
+    .variant-item { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+    .variant-item .form-input { flex: 1; }
+    .color-swatches { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 4px; }
+    .color-swatch {
+      width: 30px; height: 30px; border-radius: 50%; cursor: pointer;
+      border: 2.5px solid transparent; transition: border-color .15s, transform .15s;
+    }
+    .color-swatch.selected { border-color: var(--text); transform: scale(1.15); }
+    .btn-add {
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      width: 100%; padding: 13px; border: 1.5px dashed #333; border-radius: 13px;
+      background: none; color: var(--text2); font-size: 14px; font-weight: 600;
+      cursor: pointer; margin-top: 4px;
+    }
+    .btn-add:active { opacity: .7; }
+    .btn-danger { background: rgba(239,83,80,.12); color: var(--danger); border: none; }
   </style>
 </head>
 <body>
@@ -296,6 +406,7 @@
       <h2 id="sess-title"></h2>
       <p id="sess-counter"></p>
     </div>
+    <div id="sess-duration" style="font-size:13px;color:var(--text2);font-weight:600;flex-shrink:0">0:00</div>
   </div>
   <div class="progress-bar"><div class="progress-fill" id="sess-progress"></div></div>
   <div id="ex-container"></div>
@@ -315,6 +426,9 @@
   <div id="charts"></div>
 </div>
 
+<!-- ═══ SETTINGS ═══ -->
+<div id="screen-settings" class="screen"></div>
+
 <!-- ═══ TIMER overlay ═══ -->
 <div id="timer-overlay">
   <p id="timer-lbl">Repos</p>
@@ -329,6 +443,19 @@
   <div class="timer-btns">
     <button class="btn btn-secondary" onclick="skipTimer()" style="flex:1">Passer ›</button>
     <button class="btn btn-ghost" onclick="togglePause()" id="pause-btn" style="flex:1">Pause</button>
+  </div>
+</div>
+
+<div id="pr-toast"></div>
+
+<!-- ═══ QUIT overlay ═══ -->
+<div id="quit-overlay">
+  <div class="quit-sheet">
+    <h3>Quitter la séance ?</h3>
+    <p>Les séries déjà validées peuvent être enregistrées.</p>
+    <button class="btn btn-primary" onclick="saveAndGoHome()">💾 Enregistrer et quitter</button>
+    <button class="btn btn-secondary" onclick="abandonAndGoHome()">🗑 Abandonner</button>
+    <button class="btn btn-ghost" onclick="closeQuitOverlay()">Continuer la séance</button>
   </div>
 </div>
 
@@ -360,15 +487,22 @@
     </svg>
     <span>Progression</span>
   </button>
+  <button id="nav-settings" onclick="navTo('settings')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <circle cx="12" cy="12" r="3"/>
+      <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/>
+    </svg>
+    <span>Paramètres</span>
+  </button>
 </nav>
 
 <script>
 // ═══════════════════════════════════════════
 // PROGRAMME
 // ═══════════════════════════════════════════
-const PROG = {
+const DEFAULT_PROG = {
   upperA: {
-    name: 'UPPER A', color: 'var(--upper-a)',
+    name: 'UPPER A', color: '#f5c518',
     exercises: [
       { name: 'Handstand Push-ups', note: 'Top Set puis variante inférieure à chaque série',
         targets: ['2–4','4–6','6–8'], rest: 150, restLbl: "2'30''", variant: true },
@@ -383,7 +517,7 @@ const PROG = {
     ]
   },
   lower: {
-    name: 'LOWER', color: 'var(--lower)',
+    name: 'LOWER', color: '#4fc3f7',
     exercises: [
       { name: 'Pistol Squat', note: null,
         targets: ['6–10','6–10','6–10'], rest: 60, restLbl: "1'/côté", variant: true },
@@ -398,7 +532,7 @@ const PROG = {
     ]
   },
   upperB: {
-    name: 'UPPER B', color: 'var(--upper-b)',
+    name: 'UPPER B', color: '#ce93d8',
     exercises: [
       { name: 'Handstand Push-ups', note: 'Top Set puis variante inférieure à chaque série',
         targets: ['4–6','6–8','8–10'], rest: 150, restLbl: "2'30''", variant: true },
@@ -414,9 +548,7 @@ const PROG = {
   }
 };
 
-const ALL_EX = [...new Set(Object.values(PROG).flatMap(p => p.exercises.map(e => e.name)))];
-
-const VARIANTS = {
+const DEFAULT_VARIANTS = {
   'Handstand Push-ups': ['Pike Push-Ups au sol (pieds éloignés)', 'Pike Push-Ups au sol (pieds rapprochés)', 'Pike Push-Ups pieds surélevés', 'Pike Push-Ups avec parallettes', 'HSPU contre un mur (sans parallettes)', 'HSPU contre un mur avec parallettes', 'HSPU lesté (gilet)'],
   'One Arm Chin-up':    ['Tractions négatives', 'Chin-Ups classiques', 'Mix Grip Chin-Ups', 'Variante avec serviette', 'One Arm Chin-Up strict'],
   'Dips':               ['Négatives', 'Dips focus triceps (buste droit)', 'Dips focus pectoraux (buste incliné)', 'Sur anneaux'],
@@ -430,6 +562,22 @@ const VARIANTS = {
   'One Hand Push-ups':  ['Pompes classiques sur parallettes', 'Pompes classiques pieds surélevés', 'Pompes archer', 'One Hand Push-Ups classiques', 'One Hand Push-Ups pieds surélevés', 'One Hand Push-Ups lesté (gilet)'],
   'Chest to Bar':       ['Australian Pull-Ups', 'Tractions négatives', 'Tractions assistées (élastique)', 'Tractions strictes', 'Chest-to-Bar'],
 };
+
+// Données actives — chargées depuis localStorage ou initialisées depuis les defaults
+function loadSettingsData() {
+  try {
+    const s = JSON.parse(localStorage.getItem('gw_settings'));
+    if (s && s.prog && s.variants) return s;
+  } catch {}
+  return null;
+}
+const _saved = loadSettingsData();
+let PROG     = _saved ? _saved.prog     : JSON.parse(JSON.stringify(DEFAULT_PROG));
+let VARIANTS = _saved ? _saved.variants : JSON.parse(JSON.stringify(DEFAULT_VARIANTS));
+
+function getAllEx() {
+  return [...new Set(Object.values(PROG).flatMap(p => p.exercises.map(e => e.name)))];
+}
 
 // ═══════════════════════════════════════════
 // STORAGE
@@ -462,13 +610,32 @@ function switchScreen(name) {
   if (name === 'home')     renderHome();
   if (name === 'history')  renderHistory();
   if (name === 'progress') renderProgress();
+  if (name === 'settings') { settingsView = 'main'; renderSettings(); }
 }
 
 function confirmGoHome() {
-  if (!activeSession || confirm('Abandonner la séance en cours ?')) {
-    activeSession = null;
-    switchScreen('home');
-  }
+  if (!activeSession) { switchScreen('home'); return; }
+  document.getElementById('quit-overlay').classList.add('active');
+}
+
+function closeQuitOverlay() {
+  document.getElementById('quit-overlay').classList.remove('active');
+}
+
+function saveAndGoHome() {
+  closeQuitOverlay();
+  clearInterval(sessionTimerTick);
+  activeSession.duration = sessionStartTime ? Math.round((Date.now() - sessionStartTime) / 1000) : 0;
+  db.save(activeSession);
+  activeSession = null;
+  switchScreen('home');
+}
+
+function abandonAndGoHome() {
+  closeQuitOverlay();
+  clearInterval(sessionTimerTick);
+  activeSession = null;
+  switchScreen('home');
 }
 
 // ═══════════════════════════════════════════
@@ -476,7 +643,54 @@ function confirmGoHome() {
 // ═══════════════════════════════════════════
 function renderHome() {
   const el = document.getElementById('seance-list');
-  el.innerHTML = Object.entries(PROG).map(([key, p]) => {
+
+  // Mini calendrier — 5 semaines
+  const allSessions = db.all();
+  const sessionDates = new Set(allSessions.map(s => s.date));
+  const sessionByDate = {};
+  allSessions.forEach(s => { sessionByDate[s.date] = s.type; });
+
+  const today_str = today();
+  const todayDate = new Date(today_str);
+  // Remonter au lundi de la semaine la plus ancienne (5 semaines)
+  const startDate = new Date(todayDate);
+  startDate.setDate(startDate.getDate() - ((startDate.getDay() + 6) % 7) - 28); // lundi d'il y a 4 sem
+
+  const days = [];
+  const cursor = new Date(startDate);
+  for (let i = 0; i < 35; i++) {
+    const iso = `${cursor.getFullYear()}-${String(cursor.getMonth()+1).padStart(2,'0')}-${String(cursor.getDate()).padStart(2,'0')}`;
+    days.push({ iso, d: cursor.getDate(), isToday: iso === today_str, type: sessionByDate[iso] || null });
+    cursor.setDate(cursor.getDate() + 1);
+  }
+
+  const weekLabels = ['L','M','M','J','V','S','D'];
+  const calHTML = `
+    <div class="cal-card">
+      <div class="cal-header">
+        <span class="cal-title">Régularité</span>
+        <span class="cal-streak" id="cal-streak"></span>
+      </div>
+      <div class="cal-grid">
+        ${weekLabels.map(l => `<div class="cal-lbl">${l}</div>`).join('')}
+        ${days.map(d => {
+          const color = d.type ? PROG[d.type]?.color || 'var(--accent)' : null;
+          const style = color ? `background:${color};color:#000` : '';
+          return `<div class="cal-day${d.isToday ? ' today' : ''}${d.type ? ' done' : ''}" style="${style}">${d.d}</div>`;
+        }).join('')}
+      </div>
+    </div>`;
+
+  // Streak
+  let streak = 0;
+  const c = new Date(todayDate);
+  while (true) {
+    const iso = `${c.getFullYear()}-${String(c.getMonth()+1).padStart(2,'0')}-${String(c.getDate()).padStart(2,'0')}`;
+    if (sessionDates.has(iso)) { streak++; c.setDate(c.getDate() - 1); }
+    else break;
+  }
+
+  const cardsHTML = Object.entries(PROG).map(([key, p]) => {
     const last = db.last(key);
     const sub = last ? `Dernière : ${relDate(last.date)}` : 'Pas encore effectuée';
     return `<div class="seance-card" onclick="startSession('${key}')">
@@ -487,6 +701,10 @@ function renderHome() {
       <div class="arrow">›</div>
     </div>`;
   }).join('');
+
+  el.innerHTML = calHTML + cardsHTML;
+  const streakEl = document.getElementById('cal-streak');
+  if (streakEl) streakEl.textContent = streak > 0 ? `🔥 ${streak} jour${streak>1?'s':''}` : '';
 }
 
 function relDate(d) {
@@ -500,8 +718,12 @@ function relDate(d) {
 // ═══════════════════════════════════════════
 // SESSION
 // ═══════════════════════════════════════════
+let sessionStartTime = null;
+let sessionTimerTick = null;
+
 function startSession(type) {
   const prog = PROG[type];
+  sessionStartTime = Date.now();
   activeSession = {
     type, date: today(),
     exercises: prog.exercises.map(ex => ({
@@ -511,6 +733,12 @@ function startSession(type) {
     })),
     curEx: 0
   };
+  // Chrono affiché dans le header
+  clearInterval(sessionTimerTick);
+  sessionTimerTick = setInterval(() => {
+    const el = document.getElementById('sess-duration');
+    if (el) el.textContent = formatDuration(Date.now() - sessionStartTime);
+  }, 1000);
   // Switch screen without navTo guard
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById('screen-session').classList.add('active');
@@ -542,8 +770,22 @@ function renderEx() {
   const lastSet = lastEx ? lastEx.sets[si] : null;
 
   const prevPoids = lastSet && lastSet.weight ? ` · ${lastSet.weight} kg` : '';
+
+  // Suggestion de progression
+  let progressTip = '';
+  if (lastSet) {
+    const targetStr = ex.targets[si]; // ex: "6–8" ou "10–15"
+    const match = targetStr.match(/(\d+)[–\-](\d+)/);
+    if (match) {
+      const targetMax = parseInt(match[2]);
+      if (lastSet.reps >= targetMax) {
+        progressTip = `<div class="progress-tip">💪 Objectif atteint la dernière fois — pousse plus loin aujourd'hui !</div>`;
+      }
+    }
+  }
+
   const prevHTML = lastSet
-    ? `<div class="prev-ref">Dernière fois – Série ${si+1} : <strong>${lastSet.reps} reps</strong>${lastSet.variant ? ` · ${lastSet.variant}` : ''}${prevPoids}</div>`
+    ? `<div class="prev-ref">Dernière fois – Série ${si+1} : <strong>${lastSet.reps} reps</strong>${lastSet.variant ? ` · ${lastSet.variant}` : ''}${prevPoids}</div>${progressTip}`
     : '';
 
   const varList = VARIANTS[ex.name] || [];
@@ -560,7 +802,6 @@ function renderEx() {
       <button class="reps-btn" onclick="adjW(-1.25)">−</button>
       <input id="input-weight" type="number" inputmode="decimal" step="0.25" min="0" value="${lastWeight}">
       <button class="reps-btn" onclick="adjW(1.25)">+</button>
-      <span class="weight-unit">kg</span>
     </div>`;
 
   const isLastSet  = si === 2;
@@ -629,30 +870,72 @@ function validateSet() {
   const se = s.exercises[ei];
   const si = se.cur;
 
+  // Vérifier PR avant d'enregistrer (on compare contre l'historique passé)
+  const best = getBestSet(ex.name);
+  const isRepsPR   = repsVal > 0 && repsVal > best.reps;
+  const isWeightPR = weight != null && weight > 0 && weight > best.weight;
+
   se.sets[si] = { reps: repsVal, variant, weight };
   se.cur++;
 
   const isLastSet = si === 2;
   const isLastEx  = ei === prog.exercises.length - 1;
 
-  if (!isLastSet) {
-    // More sets for this exercise
-    showTimer(ex.rest, ex.restLbl, () => renderEx());
-  } else if (!isLastEx) {
-    // Next exercise
-    s.curEx++;
-    showTimer(ex.rest, ex.restLbl, () => renderEx());
+  const proceed = () => {
+    if (!isLastSet) {
+      showTimer(ex.rest, ex.restLbl, () => renderEx());
+    } else if (!isLastEx) {
+      s.curEx++;
+      showTimer(ex.rest, ex.restLbl, () => renderEx());
+    } else {
+      completeSession();
+    }
+  };
+
+  if (isRepsPR || isWeightPR) {
+    let msg = '🏆 Nouveau record !';
+    if (isRepsPR)   msg += `  ${repsVal} reps`;
+    if (isWeightPR) msg += `  ${weight} kg`;
+    showPRToast(msg).then(proceed);
   } else {
-    // Session done
-    completeSession();
+    proceed();
   }
 }
 
+function getBestSet(exName) {
+  let bestReps = 0, bestWeight = 0;
+  db.all().forEach(s => {
+    const ex = s.exercises.find(e => e.name === exName);
+    if (!ex) return;
+    ex.sets.filter(Boolean).forEach(set => {
+      if (set.reps > bestReps) bestReps = set.reps;
+      if ((set.weight || 0) > bestWeight) bestWeight = set.weight || 0;
+    });
+  });
+  return { reps: bestReps, weight: bestWeight };
+}
+
+function showPRToast(msg) {
+  const t = document.getElementById('pr-toast');
+  t.textContent = msg;
+  t.classList.add('active');
+  return new Promise(resolve => {
+    setTimeout(() => {
+      t.classList.remove('active');
+      setTimeout(resolve, 300); // attendre la transition de sortie
+    }, 2000);
+  });
+}
+
 function completeSession() {
+  clearInterval(sessionTimerTick);
+  const durationMs = sessionStartTime ? Date.now() - sessionStartTime : 0;
+  activeSession.duration = Math.round(durationMs / 1000);
   db.save(activeSession);
   const total = activeSession.exercises.reduce((s, ex) =>
     s + ex.sets.reduce((ss, set) => ss + (set ? set.reps : 0), 0), 0);
-  document.getElementById('completion-msg').textContent = `${total} répétitions au total`;
+  const durStr = formatDuration(durationMs);
+  document.getElementById('completion-msg').textContent = `${total} répétitions · ${durStr}`;
   document.getElementById('completion-overlay').classList.add('active');
 }
 
@@ -758,7 +1041,7 @@ function renderHistory() {
       <div class="hist-header" onclick="toggleHist(${idx})">
         <div>
           <h3 style="color:${p.color}">${p.name}</h3>
-          <div class="hist-meta">${fullDate(s.date)} · ${total} reps</div>
+          <div class="hist-meta">${fullDate(s.date)} · ${total} reps${s.duration ? ' · ' + formatDuration(s.duration * 1000) : ''}</div>
         </div>
         <span class="hist-chevron" id="hc-${idx}">›</span>
       </div>
@@ -780,7 +1063,8 @@ function toggleHist(idx) {
 let selEx = null;
 
 function renderProgress() {
-  if (!selEx) selEx = ALL_EX[0];
+  const ALL_EX = getAllEx();
+  if (!selEx || !ALL_EX.includes(selEx)) selEx = ALL_EX[0];
 
   // Pills
   document.getElementById('ex-pills').innerHTML = ALL_EX.map(n =>
@@ -893,8 +1177,266 @@ function drawLine(id, labels, values) {
 }
 
 // ═══════════════════════════════════════════
+// SETTINGS
+// ═══════════════════════════════════════════
+const PRESET_COLORS = ['#f5c518','#4fc3f7','#ce93d8','#81c784','#ff8a65','#f06292','#4db6ac','#aed581'];
+
+let settingsView = 'main'; // 'main' | 'session' | 'exercise'
+let editSessKey  = null;
+let editExIdx    = null;
+
+function saveSettings() {
+  localStorage.setItem('gw_settings', JSON.stringify({ prog: PROG, variants: VARIANTS }));
+}
+
+function renderSettings() {
+  if (settingsView === 'main')     renderSettingsMain();
+  else if (settingsView === 'session')  renderSettingsSession();
+  else if (settingsView === 'exercise') renderSettingsExercise();
+}
+
+// ── Main ──────────────────────────────────
+function renderSettingsMain() {
+  const ctn = document.getElementById('screen-settings');
+  const sessHTML = Object.entries(PROG).map(([key, p]) => `
+    <div class="settings-row">
+      <div style="width:12px;height:12px;border-radius:50%;background:${p.color};flex-shrink:0"></div>
+      <div class="settings-row-info">
+        <div class="settings-row-name">${p.name}</div>
+        <div class="settings-row-sub">${p.exercises.length} exercice${p.exercises.length!==1?'s':''}</div>
+      </div>
+      <div class="settings-row-actions">
+        <button class="icon-btn" onclick="openSettingsSession('${key}')">✏️</button>
+        <button class="icon-btn danger" onclick="deleteSession('${key}')">🗑</button>
+      </div>
+    </div>`).join('');
+
+  ctn.innerHTML = `
+    <h2 style="font-size:22px;font-weight:800;margin-bottom:4px">Paramètres</h2>
+    <p style="font-size:13px;color:var(--text2);margin-bottom:0">Personnalise ton programme</p>
+    <div class="settings-section-title">Séances</div>
+    ${sessHTML}
+    <button class="btn-add" onclick="addSession()">+ Ajouter une séance</button>
+    <div class="settings-section-title">Données</div>
+    <button class="btn btn-ghost btn-danger" style="margin-top:0" onclick="resetToDefaults()">↺ Réinitialiser le programme par défaut</button>`;
+}
+
+// ── Session ───────────────────────────────
+function openSettingsSession(key) {
+  editSessKey = key;
+  settingsView = 'session';
+  renderSettings();
+}
+
+function renderSettingsSession() {
+  const p = PROG[editSessKey];
+  const swatches = PRESET_COLORS.map(c =>
+    `<div class="color-swatch${p.color===c?' selected':''}" style="background:${c}" onclick="setSessColor('${editSessKey}','${c}')"></div>`
+  ).join('');
+  const exHTML = p.exercises.map((ex, i) => `
+    <div class="settings-row">
+      <div class="settings-row-info">
+        <div class="settings-row-name">${ex.name}</div>
+        <div class="settings-row-sub">${ex.targets[0]} · ${ex.targets[1]} · ${ex.targets[2]} reps · ${ex.restLbl} repos</div>
+      </div>
+      <div class="settings-row-actions">
+        <button class="icon-btn" onclick="openSettingsExercise(${i})">✏️</button>
+        <button class="icon-btn danger" onclick="deleteExercise(${i})">🗑</button>
+      </div>
+    </div>`).join('');
+
+  document.getElementById('screen-settings').innerHTML = `
+    <div class="settings-header">
+      <button class="back-btn" onclick="settingsView='main';renderSettings()">←</button>
+      <div style="flex:1;font-size:18px;font-weight:800">Modifier la séance</div>
+    </div>
+    <div class="form-field">
+      <label>Nom</label>
+      <input class="form-input" id="sess-name-input" value="${p.name}">
+    </div>
+    <div class="form-field">
+      <label>Couleur</label>
+      <div class="color-swatches">${swatches}</div>
+    </div>
+    <button class="btn btn-secondary" style="margin-bottom:20px" onclick="saveSessName()">Sauvegarder</button>
+    <div class="settings-section-title">Exercices</div>
+    ${exHTML || '<p style="color:var(--text2);font-size:14px;margin-bottom:12px">Aucun exercice.</p>'}
+    <button class="btn-add" onclick="addExercise()">+ Ajouter un exercice</button>`;
+}
+
+function saveSessName() {
+  const val = document.getElementById('sess-name-input').value.trim();
+  if (!val) return;
+  PROG[editSessKey].name = val;
+  saveSettings();
+  renderSettingsSession();
+}
+
+function setSessColor(key, color) {
+  PROG[key].color = color;
+  saveSettings();
+  renderSettingsSession();
+}
+
+function deleteSession(key) {
+  if (Object.keys(PROG).length <= 1) { alert('Tu dois garder au moins une séance.'); return; }
+  if (!confirm(`Supprimer "${PROG[key].name}" ?`)) return;
+  delete PROG[key];
+  saveSettings();
+  renderSettingsMain();
+}
+
+function addSession() {
+  const key = 'sess_' + Date.now();
+  PROG[key] = { name: 'NOUVELLE SÉANCE', color: '#f5c518', exercises: [] };
+  saveSettings();
+  openSettingsSession(key);
+}
+
+// ── Exercise ──────────────────────────────
+function openSettingsExercise(idx) {
+  editExIdx = idx;
+  settingsView = 'exercise';
+  renderSettings();
+}
+
+function renderSettingsExercise() {
+  const ex = PROG[editSessKey].exercises[editExIdx];
+  const vars = VARIANTS[ex.name] || [];
+  const varHTML = vars.map((v, i) => `
+    <div class="variant-item">
+      <input class="form-input" id="var-${i}" value="${v.replace(/"/g,'&quot;')}">
+      <button class="icon-btn danger" onclick="deleteVariant(${i})">✕</button>
+    </div>`).join('');
+
+  document.getElementById('screen-settings').innerHTML = `
+    <div class="settings-header">
+      <button class="back-btn" onclick="saveVariantsAndBack()">←</button>
+      <div style="flex:1;font-size:18px;font-weight:800">Modifier l'exercice</div>
+    </div>
+    <div class="form-field">
+      <label>Nom de l'exercice</label>
+      <input class="form-input" id="ex-name" value="${ex.name.replace(/"/g,'&quot;')}">
+    </div>
+    <div class="form-field">
+      <label>Objectifs · Série 1 / 2 / 3</label>
+      <div class="targets-row">
+        <input class="form-input" id="t0" value="${ex.targets[0]}" placeholder="S1">
+        <input class="form-input" id="t1" value="${ex.targets[1]}" placeholder="S2">
+        <input class="form-input" id="t2" value="${ex.targets[2]}" placeholder="S3">
+      </div>
+    </div>
+    <div class="form-field">
+      <label>Temps de repos (secondes)</label>
+      <input class="form-input" type="number" inputmode="numeric" id="ex-rest" value="${ex.rest}">
+    </div>
+    <div class="form-field">
+      <label>Label repos (affiché)</label>
+      <input class="form-input" id="ex-rest-lbl" value="${ex.restLbl.replace(/"/g,'&quot;')}" placeholder="Ex: 1'30''">
+    </div>
+    <div class="form-field">
+      <label>Note (optionnel)</label>
+      <input class="form-input" id="ex-note" value="${(ex.note||'').replace(/"/g,'&quot;')}" placeholder="Ex: Top Set puis variante…">
+    </div>
+    <button class="btn btn-secondary" style="margin-bottom:20px" onclick="saveExercise()">Sauvegarder l'exercice</button>
+    <div class="settings-section-title">Variantes</div>
+    <div id="variants-list">${varHTML}</div>
+    <button class="btn-add" onclick="addVariant()">+ Ajouter une variante</button>`;
+}
+
+function saveExercise() {
+  const ex = PROG[editSessKey].exercises[editExIdx];
+  const oldName = ex.name;
+  const newName = document.getElementById('ex-name').value.trim();
+  if (!newName) return;
+  ex.name    = newName;
+  ex.targets = [
+    document.getElementById('t0').value.trim() || ex.targets[0],
+    document.getElementById('t1').value.trim() || ex.targets[1],
+    document.getElementById('t2').value.trim() || ex.targets[2],
+  ];
+  ex.rest    = parseInt(document.getElementById('ex-rest').value) || ex.rest;
+  ex.restLbl = document.getElementById('ex-rest-lbl').value.trim() || ex.restLbl;
+  const note = document.getElementById('ex-note').value.trim();
+  ex.note    = note || null;
+  if (oldName !== newName) {
+    if (VARIANTS[oldName]) { VARIANTS[newName] = VARIANTS[oldName]; delete VARIANTS[oldName]; }
+  }
+  saveSettings();
+  renderSettingsExercise();
+}
+
+function saveVariants() {
+  const ex = PROG[editSessKey]?.exercises[editExIdx];
+  if (!ex) return;
+  const list = document.getElementById('variants-list');
+  if (!list) return;
+  VARIANTS[ex.name] = Array.from(list.querySelectorAll('input')).map(i => i.value.trim()).filter(Boolean);
+  saveSettings();
+}
+
+function saveVariantsAndBack() {
+  saveVariants();
+  settingsView = 'session';
+  renderSettings();
+}
+
+function addVariant() {
+  saveVariants();
+  const ex = PROG[editSessKey].exercises[editExIdx];
+  if (!VARIANTS[ex.name]) VARIANTS[ex.name] = [];
+  VARIANTS[ex.name].push('Nouvelle variante');
+  saveSettings();
+  renderSettingsExercise();
+  setTimeout(() => {
+    const inputs = document.getElementById('variants-list').querySelectorAll('input');
+    if (inputs.length) inputs[inputs.length - 1].focus();
+  }, 50);
+}
+
+function deleteVariant(idx) {
+  saveVariants();
+  const ex = PROG[editSessKey].exercises[editExIdx];
+  VARIANTS[ex.name].splice(idx, 1);
+  saveSettings();
+  renderSettingsExercise();
+}
+
+function deleteExercise(idx) {
+  if (!confirm('Supprimer cet exercice ?')) return;
+  PROG[editSessKey].exercises.splice(idx, 1);
+  saveSettings();
+  renderSettingsSession();
+}
+
+function addExercise() {
+  const newEx = { name: 'Nouvel exercice', note: null, targets: ['8–12','8–12','8–12'], rest: 90, restLbl: "1'30''", variant: true };
+  PROG[editSessKey].exercises.push(newEx);
+  VARIANTS['Nouvel exercice'] = [];
+  saveSettings();
+  openSettingsExercise(PROG[editSessKey].exercises.length - 1);
+}
+
+function resetToDefaults() {
+  if (!confirm('Réinitialiser le programme par défaut ? Toutes tes modifications seront perdues.')) return;
+  PROG     = JSON.parse(JSON.stringify(DEFAULT_PROG));
+  VARIANTS = JSON.parse(JSON.stringify(DEFAULT_VARIANTS));
+  localStorage.removeItem('gw_settings');
+  selEx = null;
+  renderSettingsMain();
+}
+
+// ═══════════════════════════════════════════
 // UTILS
 // ═══════════════════════════════════════════
+function formatDuration(ms) {
+  const s = Math.floor(ms / 1000);
+  const m = Math.floor(s / 60);
+  const h = Math.floor(m / 60);
+  if (h > 0) return `${h}h${String(m % 60).padStart(2,'0')}`;
+  return `${m}min${String(s % 60).padStart(2,'0')}`;
+}
+
 function today() {
   const d = new Date();
   return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
